@@ -18,12 +18,24 @@ Physics.prototype.destroy = function() {
 
 
 function Graphics() {
+    // Renderer.
     this.renderer = new T.WebGLRenderer();
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.canvas = document.body.appendChild(this.renderer.domElement);
+
+    // Scene.
     this.scene = new T.Scene();
+
+    // Camera.
     this.camera = new T.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
     this.camera.position.z = 10;
+
+    // Geometries.
+    this.boxGeometry = new T.BoxGeometry();
+    this.sphereGeometry = new T.SphereGeometry(0.5);
+
+    // Materials.
+    var material = new T.MeshBasicMaterial({ color: 0xffffff });
 }
 
 
@@ -34,14 +46,92 @@ Graphics.prototype.destroy = function() {
 }
 
 
+function GameObject(physics, graphics, shape, mass, x, y, z) {
+    this.physics = physics;
+    this.graphics = graphics;
+    var sx, sy, sz;
+    if (shape.length == 1) {
+        sx = sy = sz = 1;
+    }
+    else if (shape.length == 2) {
+        sx = sy = sz = shape[1];
+    }
+    else if (shape.length == 3) {
+        sx = shape[1];
+        sy = shape[2];
+        sz = 1;
+    }
+    else if (shape.length == 4) {
+        sx = shape[1];
+        sy = shape[2];
+        sz = shape[3];
+    }
+
+    // Body.
+    switch (shape[0]) {
+        case 'sphere':
+            this.collisionShape = new A.btSphereShape(sx * 50);
+            break;
+        default:
+            this.collisionShape = new A.btBoxShape(new A.btVector3(sx * 50, sy * 50, sz * 50));
+    }
+    var localInertia = new A.btVector3();
+    this.collisionShape.calculateLocalInertia(mass, localInertia);
+    var transform = new A.btTransform();
+    transform.setIdentity();
+    transform.setOrigin(new A.btVector3(x * 100, y * 100, z * 100));
+    this.motionState = new A.btDefaultMotionState(transform);
+    var constructionInfo = new A.btRigidBodyConstructionInfo(mass, this.motionState, this.collisionShape, localInertia);
+    this.body = new A.btRigidBody(constructionInfo);
+
+    // Mesh.
+    var geometry;
+    switch (shape[0]) {
+        case 'sphere':
+            geometry = graphics.sphereGeometry;
+            sz = sy = sx;
+            break;
+        default:
+            geometry = graphics.boxGeometry;
+    }
+    this.mesh = new T.Mesh(geometry, graphics.material);
+    this.mesh.scale.set(sx, sy, sz);
+    this.mesh.position.set(x ? x : 0, y ? y : 0, z ? z : 0);
+}
+
+
+GameObject.prototype.destroy = function() {
+    A.destroy(this.body);
+    A.destroy(this.motionState);
+    A.destroy(this.collisionShape);
+}
+
+
 function play() {
     var physics;
     var graphics;
+
+    var blocks = new Array();
 
 
     function start() {
         physics = new Physics();
         graphics = new Graphics();
+
+        blocks.push(new GameObject(physics, graphics, ['box']));
+        blocks.push(new GameObject(physics, graphics, ['box'], 0, -4, 4, 0));
+        blocks.push(new GameObject(physics, graphics, ['box', 2], 0, 4, 4, 0));
+        blocks.push(new GameObject(physics, graphics, ['box', 2, 1.5], 0, -4, -4, 0));
+        blocks.push(new GameObject(physics, graphics, ['box', 0.5, 1, 1.5], 0, 4, -4, 0));
+        blocks.push(new GameObject(physics, graphics, ['sphere'], 0, -6));
+        blocks.push(new GameObject(physics, graphics, ['sphere', 0.5], 0, 6));
+        blocks.push(new GameObject(physics, graphics, ['box', 16, 1, 16], 0, 0, -6, 0));
+        blocks.push(new GameObject(physics, graphics, ['box'], 1, 0, 2));
+        blocks.push(new GameObject(physics, graphics, ['sphere'], 1, 0, 4));
+        for (block of blocks) {
+            physics.world.addRigidBody(block.body);
+            graphics.scene.add(block.mesh);
+        }
     }
 
 
@@ -65,8 +155,8 @@ function play() {
 
     function inputButton(button, pressed) {
     }
-    
-    
+
+
     function inputPoint(x, y) {
     }
 
