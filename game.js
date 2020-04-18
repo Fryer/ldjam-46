@@ -30,12 +30,19 @@ function Graphics() {
     this.camera = new T.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
     this.camera.position.z = 10;
 
+    // Lighting.
+    this.sun = new T.DirectionalLight(0xffdfbf);
+    this.sun.position.set(-1, 2, 4);
+    this.scene.add(this.sun);
+    this.ambient = new T.AmbientLight(0x203040);
+    this.scene.add(this.ambient);
+
     // Geometries.
     this.boxGeometry = new T.BoxGeometry();
     this.sphereGeometry = new T.SphereGeometry(0.5);
 
     // Materials.
-    var material = new T.MeshBasicMaterial({ color: 0xffffff });
+    this.material = new T.MeshStandardMaterial();
 }
 
 
@@ -126,7 +133,7 @@ function play() {
         blocks.push(new GameObject(physics, graphics, ['sphere'], 0, -6));
         blocks.push(new GameObject(physics, graphics, ['sphere', 0.5], 0, 6));
         blocks.push(new GameObject(physics, graphics, ['box', 16, 1, 16], 0, 0, -6, 0));
-        blocks.push(new GameObject(physics, graphics, ['box'], 1, 0, 2));
+        blocks.push(new GameObject(physics, graphics, ['box'], 1, 0.6, 2));
         blocks.push(new GameObject(physics, graphics, ['sphere'], 1, 0, 4));
         for (block of blocks) {
             physics.world.addRigidBody(block.body);
