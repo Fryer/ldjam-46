@@ -1,5 +1,28 @@
+function Physics() {
+    this.collisionConfiguration = new A.btDefaultCollisionConfiguration();
+    this.dispatcher = new A.btCollisionDispatcher(this.collisionConfiguration);
+    this.pairCache = new A.btDbvtBroadphase();
+    this.constraintSolver = new A.btSequentialImpulseConstraintSolver();
+    this.world = new A.btDiscreteDynamicsWorld(this.dispatcher, this.pairCache, this.constraintSolver, this.collisionConfiguration);
+    this.world.setGravity(new A.btVector3(0, -10, 0));
+}
+
+
+Physics.prototype.destroy = function() {
+    A.destroy(this.world);
+    A.destroy(this.constraintSolver);
+    A.destroy(this.pairCache);
+    A.destroy(this.dispatcher);
+    A.destroy(this.collisionConfiguration);
+};
+
+
 function play() {
+    var physics;
+
+
     function start() {
+        physics = new Physics();
     }
 
 
@@ -7,7 +30,8 @@ function play() {
     }
 
 
-    function updatePhysics() {
+    function updatePhysics(dt) {
+        physics.world.stepSimulation(dt, 5, 1 / 120);
     }
 
 
@@ -32,8 +56,9 @@ function play() {
     start();
     function frame() {
         requestAnimationFrame(frame);
-        update(clock.getDelta());
-        updatePhysics();
+        var dt = clock.getDelta();
+        update(dt);
+        updatePhysics(dt);
         syncPhysics();
         render();
     }
