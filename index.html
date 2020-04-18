@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ldjam-46</title>
+<script src="three.min.js"></script>
+<script src="ammo.wasm.js"></script>
+<script src="game.js"></script>
+<style>
+body {
+    background: #000;
+    margin: 0;
+    user-select: none;
+}
+canvas {
+    display: block;
+}
+</style>
+</head>
+<body>
+<script>
+Ammo().then(function(Ammo) {
+    T = THREE;
+    A = Ammo;
+    play();
+});
+</script>
+</body>
+</html>
