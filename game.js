@@ -17,12 +17,31 @@ Physics.prototype.destroy = function() {
 };
 
 
+function Graphics() {
+    this.renderer = new T.WebGLRenderer();
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.canvas = document.body.appendChild(this.renderer.domElement);
+    this.scene = new T.Scene();
+    this.camera = new T.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+    this.camera.position.z = 10;
+}
+
+
+Graphics.prototype.destroy = function() {
+    this.scene.dispose();
+    this.renderer.dispose();
+    this.canvas.remove();
+}
+
+
 function play() {
     var physics;
+    var graphics;
 
 
     function start() {
         physics = new Physics();
+        graphics = new Graphics();
     }
 
 
@@ -40,6 +59,7 @@ function play() {
 
 
     function render() {
+        graphics.renderer.render(graphics.scene, graphics.camera);
     }
 
 
@@ -66,7 +86,7 @@ function play() {
 
     // Register input event listeners.
     function key(event, pressed) {
-        if (inputButton('code' in event ? event.code : event.keyCode, pressed)) {
+        if (inputButton(event.code, pressed)) {
             event.preventDefault();
         }
     }
