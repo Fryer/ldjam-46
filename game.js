@@ -92,18 +92,19 @@ function placeBlock() {
 
 
 function spawnRandomBlock() {
+    var x = Math.random() * 2 + screenX + 16;
     var y = Math.random() * 12 - 6;
     var block;
     if (Math.random() < Math.min(0.5, (screenX - 20) * 0.0025)) {
         // Moving block.
-        block = new GameObject(physics, graphics, ['box', 2, 4, 1], 'kinematic', screenX + 16, y);
+        block = new GameObject(physics, graphics, ['box', 2, 4, 1], 'kinematic', x, y);
         block.canMove = true;
         block.type = 'moveVertical';
         block.direction = 1 + Math.random() * Math.min(1, (screenX - 40) * 0.00125);
     }
     else {
         // Normal block.
-        block = new GameObject(physics, graphics, ['box', 1, 4, 1], 0, screenX + 16, y);
+        block = new GameObject(physics, graphics, ['box', 1, 4, 1], 0, x, y);
         block.canMove = false;
         block.type = 'normal';
     }
@@ -149,7 +150,7 @@ function update(dt) {
         randomSpawnCooldown -= dt;
     }
     if (randomSpawnCooldown <= 0) {
-        randomSpawnCooldown = 4;
+        randomSpawnCooldown = 3 + Math.random() * 2;
         spawnRandomBlock();
     }
 
