@@ -117,6 +117,40 @@ function GameObject(physics, graphics, shape, mass, x, y, z) {
     this.mesh.position.set(x, y, z);
     this.mesh.castShadow = true;
     this.mesh.receiveShadow = true;
+
+
+    var bodyActive = false;
+    Object.defineProperty(this, 'bodyActive', {
+        get() {
+            return bodyActive;
+        },
+        set(active) {
+            if (active && !bodyActive) {
+                this.physics.world.addRigidBody(this.body);
+            }
+            else if (!active && bodyActive) {
+                this.physics.world.removeRigidBody(this.body);
+            }
+            bodyActive = active;
+        }
+    });
+
+
+    var meshActive = false;
+    Object.defineProperty(this, 'meshActive', {
+        get() {
+            return meshActive;
+        },
+        set(active) {
+            if (active && !meshActive) {
+                this.graphics.scene.add(this.mesh);
+            }
+            else if (!active && meshActive) {
+                this.graphics.scene.remove(this.mesh);
+            }
+            meshActive = active;
+        }
+    });
 }
 
 
@@ -159,8 +193,8 @@ function play() {
         blocks.push(new GameObject(physics, graphics, ['box'], 1, 0.6, 2));
         blocks.push(new GameObject(physics, graphics, ['sphere'], 1, 0, 4));
         for (block of blocks) {
-            physics.world.addRigidBody(block.body);
-            graphics.scene.add(block.mesh);
+            block.bodyActive = true;
+            block.meshActive = true;
         }
     }
 
