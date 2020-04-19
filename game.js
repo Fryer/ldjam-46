@@ -273,7 +273,7 @@ export function play() {
     start();
     function frame() {
         requestAnimationFrame(frame);
-        var dt = clock.getDelta();
+        var dt = Math.min(clock.getDelta(), 1 / 30);
         update(dt);
         updatePhysics(dt);
         syncPhysics();
