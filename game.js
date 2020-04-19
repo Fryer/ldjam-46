@@ -17,6 +17,7 @@ var startingPlatform;
 var selectedBlock;
 var blocks;
 
+var started;
 var screenX;
 var placementCooldown;
 var randomSpawnCooldown;
@@ -38,6 +39,7 @@ function buildLevel() {
 
     blocks = new Array();
 
+    started = false;
     screenX = 0;
     placementCooldown = 0;
     randomSpawnCooldown = 8;
@@ -69,6 +71,9 @@ function updateBest() {
 
 
 function placeBlock() {
+    // Start scrolling when the first block is placed.
+    started = true;
+
     if (placementCooldown > 0) {
         return;
     }
@@ -125,14 +130,18 @@ function update(dt) {
     }
 
     // Spawn random blocks.
-    randomSpawnCooldown -= dt;
+    if (started) {
+        randomSpawnCooldown -= dt;
+    }
     if (randomSpawnCooldown <= 0) {
         randomSpawnCooldown = 4;
         spawnRandomBlock();
     }
 
     // Scroll.
-    screenX += 2 * dt;
+    if (started) {
+        screenX += 2 * dt;
+    }
     graphics.camera.position.x = screenX;
 
     // Adjust player speed.
@@ -150,8 +159,10 @@ function update(dt) {
     }
 
     // Move player.
-    player.body.setAngularVelocity(new A.btVector3(0, 0, -4 - player.speedOffset));
-    player.body.activate();
+    if (started) {
+        player.body.setAngularVelocity(new A.btVector3(0, 0, -4 - player.speedOffset));
+        player.body.activate();
+    }
 
     // Transform input coordinates to world space.
     var clip = (new T.Vector3(0, 0, 0)).applyMatrix4(graphics.camera.matrixWorld).applyMatrix4(graphics.camera.projectionMatrix);
