@@ -21,6 +21,7 @@ var started;
 var screenX;
 var placementCooldown;
 var randomSpawnCooldown;
+var randomTreeCooldown;
 
 
 function buildLevel() {
@@ -45,6 +46,7 @@ function buildLevel() {
     screenX = 0;
     placementCooldown = 0;
     randomSpawnCooldown = 8;
+    randomTreeCooldown = 1;
 
     document.getElementById('start').style.display = '';
 }
@@ -157,6 +159,20 @@ function spawnRandomBlock() {
 }
 
 
+function spawnRandomTree() {
+    var x = Math.random() * 4 + screenX + 32;
+    var z = Math.random() * 2 - 8;
+    var height = 5 + Math.random() * 20;
+    var width = 0.5 + height * 0.1 + Math.random() * 2;
+    var block = new GameObject(physics, graphics, ['box', width, height, width * 0.5], 0, x, -12, z);
+    block.mesh.material = graphics.treeMaterial;
+    block.canMove = false;
+    block.type = 'tree';
+    block.meshActive = true;
+    blocks.push(block);
+}
+
+
 function start() {
     physics = new Physics();
     graphics = new Graphics();
@@ -168,6 +184,7 @@ function start() {
     graphics.obstacleMaterial = new T.MeshStandardMaterial({ color: 0x9f9f9f });
     graphics.movingMaterial = new T.MeshStandardMaterial({ color: 0x2060ff });
     graphics.sawMaterial = new T.MeshStandardMaterial({ color: 0x9f2000 });
+    graphics.treeMaterial = new T.MeshStandardMaterial({ color: 0x009f00 });
 
     buildLevel();
     updateBest();
@@ -200,6 +217,15 @@ function update(dt) {
     if (randomSpawnCooldown <= 0) {
         randomSpawnCooldown = 4 - Math.min(screenX * 0.002, 2) + Math.random() * 2;
         spawnRandomBlock();
+    }
+
+    // Spawn random trees.
+    if (started) {
+        randomTreeCooldown -= dt;
+    }
+    if (randomTreeCooldown <= 0) {
+        randomTreeCooldown = 1;
+        spawnRandomTree();
     }
 
     // Scroll.
