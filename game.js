@@ -104,6 +104,12 @@ function update(dt) {
         restart();
     }
 
+    // Remove off-screen blocks.
+    if (blocks.length > 0 && blocks[0].mesh.position.x < screenX - 16) {
+        blocks[0].destroy();
+        blocks = blocks.slice(1);
+    }
+
     // Scroll.
     screenX += 2 * dt;
     graphics.camera.position.x = screenX;
