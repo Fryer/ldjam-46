@@ -5,7 +5,6 @@
 <title>ldjam-46</title>
 <script src="three.min.js"></script>
 <script src="ammo.wasm.js"></script>
-<script src="game.js"></script>
 <style>
 body {
     background: #000;
@@ -18,10 +17,11 @@ canvas {
 </style>
 </head>
 <body>
-<script>
+<script type="module">
+import { play } from '/game.js';
 Ammo().then(function(Ammo) {
-    T = THREE;
-    A = Ammo;
+    window.T = THREE;
+    window.A = Ammo;
     play();
 });
 </script>
