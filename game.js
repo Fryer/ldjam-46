@@ -6,6 +6,9 @@ import { GameObject } from '/game-object.js';
 var physics;
 var graphics;
 
+var player;
+var startingPlatform;
+var selectedPlatform;
 var blocks = new Array();
 
 
@@ -13,20 +16,14 @@ function start() {
     physics = new Physics();
     graphics = new Graphics();
 
-    blocks.push(new GameObject(physics, graphics, ['box']));
-    blocks.push(new GameObject(physics, graphics, ['box'], 0, -4, 4));
-    blocks.push(new GameObject(physics, graphics, ['box', 2], 0, 4, 4));
-    blocks.push(new GameObject(physics, graphics, ['box', 2, 1.5], 0, -4, -4, 0, Math.PI * 0.4));
-    blocks.push(new GameObject(physics, graphics, ['box', 0.5, 1, 1.5], 0, 4, -4, 0, -Math.PI * 0.2));
-    blocks.push(new GameObject(physics, graphics, ['sphere'], 0, -6));
-    blocks.push(new GameObject(physics, graphics, ['sphere', 0.5], 0, 6));
-    blocks.push(new GameObject(physics, graphics, ['box', 16, 1, 16], 0, 0, -6));
-    blocks.push(new GameObject(physics, graphics, ['box'], 1, 0.6, 2));
-    blocks.push(new GameObject(physics, graphics, ['sphere'], 1, 0, 4));
-    for (let block of blocks) {
-        block.bodyActive = true;
-        block.meshActive = true;
-    }
+    player = new GameObject(physics, graphics, ['sphere'], 1);
+    player.bodyActive = true;
+    player.meshActive = true;
+    startingPlatform = new GameObject(physics, graphics, ['box', 10, 0.5, 2], 0, 0, -2);
+    startingPlatform.bodyActive = true;
+    startingPlatform.meshActive = true;
+    selectedPlatform = new GameObject(physics, graphics, ['box', 5, 0.5, 1]);
+    selectedPlatform.meshActive = true;
 }
 
 
@@ -40,9 +37,7 @@ function updatePhysics(dt) {
 
 
 function syncPhysics() {
-    for (let block of blocks) {
-        block.syncPhysics();
-    }
+    player.syncPhysics();
 }
 
 
@@ -56,6 +51,13 @@ function inputButton(button, pressed) {
 
 
 function inputPoint(x, y) {
+    // Transform page coordinates to world space.
+    var clipX = 1 - 2 * x / window.innerWidth;
+    var clipY = 2 * y / window.innerHeight - 1;
+    var clipZ = (new T.Vector3(0, 0, 0)).applyMatrix4(graphics.camera.matrixWorld).applyMatrix4(graphics.camera.projectionMatrix).z;
+    var worldPosition = (new T.Vector3(clipX, clipY, clipZ)).applyMatrix4(graphics.camera.projectionMatrixInverse).applyMatrix4(graphics.camera.matrixWorldInverse);
+
+    selectedPlatform.mesh.position.copy(worldPosition);
 }
 
 
