@@ -90,6 +90,10 @@ function syncPhysics() {
 
 function render() {
     graphics.renderer.render(graphics.scene, graphics.camera);
+
+    // Update UI.
+    var distanceUI = document.getElementById('distance');
+    distanceUI.innerText = (player.mesh.position.x * 10).toFixed();
 }
 
 

@@ -14,9 +14,21 @@ body {
 canvas {
     display: block;
 }
+#ui {
+    position: fixed;
+    left: 100px;
+    top: 20px;
+    color: #fff;
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 60px;
+}
 </style>
 </head>
 <body>
+<div id="ui">
+Distance: <span id="distance">0</span>
+</div>
 <script type="module">
 import { play } from '/game.js';
 Ammo().then(function(Ammo) {
