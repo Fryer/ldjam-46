@@ -94,6 +94,8 @@ function GameObject(physics, graphics, shape, mass, x, y, z) {
     this.motionState = new A.btDefaultMotionState(transform);
     var constructionInfo = new A.btRigidBodyConstructionInfo(mass, this.motionState, this.collisionShape, localInertia);
     this.body = new A.btRigidBody(constructionInfo);
+    this.body.setLinearFactor(new A.btVector3(1, 1, 0));
+    this.body.setAngularFactor(new A.btVector3(0, 0, 1));
 
     // Mesh.
     var geometry;
