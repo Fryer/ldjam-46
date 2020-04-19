@@ -161,7 +161,7 @@ function update(dt) {
         randomSpawnCooldown -= dt;
     }
     if (randomSpawnCooldown <= 0) {
-        randomSpawnCooldown = 3 + Math.random() * 2;
+        randomSpawnCooldown = 4 - Math.min(screenX * 0.002, 2) + Math.random() * 2;
         spawnRandomBlock();
     }
 
