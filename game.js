@@ -102,7 +102,6 @@ function update(dt) {
     // Check for death.
     if (player.mesh.position.x < screenX - 12 || player.mesh.position.y < -8) {
         restart();
-        return;
     }
 
     // Scroll.
