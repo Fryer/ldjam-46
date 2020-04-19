@@ -10,6 +10,7 @@ export function Graphics() {
 
     // Scene.
     this.scene = new T.Scene();
+    this.scene.fog = new T.Fog(0x809fbf, 10, 30);
 
     // Camera.
     this.camera = new T.PerspectiveCamera(60, Math.min(window.innerWidth / window.innerHeight, 2), 0.1, 1000);
@@ -25,8 +26,8 @@ export function Graphics() {
         new T.Vector3(32, -16, -20)
     );
     this.backgroundGeometry.faces.push(
-        new T.Face3(0, 1, 2, null, [new T.Color(0xbfbfbf), new T.Color(0x809fbf), new T.Color(0xbfbfbf)]),
-        new T.Face3(3, 2, 1, null, [new T.Color(0x809fbf), new T.Color(0xbfbfbf), new T.Color(0x809fbf)])
+        new T.Face3(0, 1, 2, null, [new T.Color(0xffffff), new T.Color(0x4080bf), new T.Color(0xffffff)]),
+        new T.Face3(3, 2, 1, null, [new T.Color(0x4080bf), new T.Color(0xffffff), new T.Color(0x4080bf)])
     );
     this.backgroundGeometry.computeBoundingSphere();
     this.backgroundMaterial = new T.MeshBasicMaterial({ vertexColors: true });
