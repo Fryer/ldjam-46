@@ -22,6 +22,11 @@ export function GameObject(physics, graphics, shape, mass, x, y, z, angle) {
         sz = shape[3];
     }
     mass = mass ? mass : 0;
+    var kinematic = false;
+    if (mass == 'kinematic') {
+        kinematic = true;
+        mass = 0;
+    }
     x = x ? x : 0;
     y = y ? y : 0;
     z = z ? z : 0;
@@ -49,6 +54,10 @@ export function GameObject(physics, graphics, shape, mass, x, y, z, angle) {
     this.body = new A.btRigidBody(constructionInfo);
     this.body.setLinearFactor(new A.btVector3(1, 1, 0));
     this.body.setAngularFactor(new A.btVector3(0, 0, 1));
+    if (kinematic) {
+        this.body.setCollisionFlags(this.body.getCollisionFlags() | 2);
+        this.body.setActivationState(4);
+    }
 
     // Mesh.
     var geometry;

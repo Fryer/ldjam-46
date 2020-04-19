@@ -83,6 +83,8 @@ function placeBlock() {
     var s = selectedBlock.mesh.scale;
     var p = selectedBlock.mesh.position;
     var block = new GameObject(physics, graphics, ['box', s.x, s.y, s.z], 0, p.x, p.y, p.z, inputAngle * Math.PI * 0.125);
+    block.canMove = false;
+    block.type = 'normal';
     block.bodyActive = true;
     block.meshActive = true;
     blocks.push(block);
@@ -90,8 +92,21 @@ function placeBlock() {
 
 
 function spawnRandomBlock() {
-    var y = Math.random() * 10 - 5;
-    var block = new GameObject(physics, graphics, ['box', 1, 4, 1], 0, screenX + 16, y);
+    var y = Math.random() * 12 - 6;
+    var block;
+    if (Math.random() < Math.min(0.5, (screenX - 20) * 0.0025)) {
+        // Moving block.
+        block = new GameObject(physics, graphics, ['box', 2, 4, 1], 'kinematic', screenX + 16, y);
+        block.canMove = true;
+        block.type = 'moveVertical';
+        block.direction = 1 + Math.random() * Math.min(1, (screenX - 40) * 0.00125);
+    }
+    else {
+        // Normal block.
+        block = new GameObject(physics, graphics, ['box', 1, 4, 1], 0, screenX + 16, y);
+        block.canMove = false;
+        block.type = 'normal';
+    }
     block.bodyActive = true;
     block.meshActive = true;
     blocks.push(block);
@@ -181,6 +196,23 @@ function update(dt) {
     }
     selectedBlock.mesh.position.copy(worldPosition);
     selectedBlock.mesh.quaternion.setFromEuler(new T.Euler(0, 0, inputAngle * Math.PI * 0.125, 'XYZ'));
+
+    // Move blocks.
+    for (let block of blocks) {
+        if (block.type == 'moveVertical') {
+            if (block.direction > 0 && block.mesh.position.y > 6) {
+                block.direction *= -1;
+            }
+            else if (block.direction < 0 && block.mesh.position.y < -6) {
+                block.direction *= -1;
+            }
+            var speed = 100 * block.direction;
+            var transform = new A.btTransform();
+            block.motionState.getWorldTransform(transform);
+            transform.setOrigin(transform.getOrigin().op_add(new A.btVector3(0, speed * dt, 0)));
+            block.motionState.setWorldTransform(transform);
+        }
+    }
 }
 
 
@@ -191,6 +223,12 @@ function updatePhysics(dt) {
 
 function syncPhysics() {
     player.syncPhysics();
+
+    for (let block of blocks) {
+        if (block.canMove) {
+            block.syncPhysics();
+        }
+    }
 }
 
 
