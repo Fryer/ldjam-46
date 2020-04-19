@@ -19,12 +19,23 @@ canvas {
 }
 .ui {
     position: fixed;
-    top: 20px;
     color: #fff;
-    font-family: monospace;
-    font-weight: bold;
-    font-size: 60px;
     text-shadow: 2px 2px #000;
+    font-family: monospace;
+    text-align: left;
+}
+.score {
+    font-weight: bold;
+    font-size: 6vh;
+}
+.controls {
+    font-size: 3vh;
+}
+.top {
+    top: 20px;
+}
+.bottom {
+    bottom: 20px;
 }
 .left {
     left: 100px;
@@ -36,11 +47,16 @@ canvas {
 </style>
 </head>
 <body>
-<div class="ui left">
+<div class="ui score top left">
 Distance: <span id="distance">0</span>
 </div>
-<div class="ui right">
+<div class="ui score top right">
 Best: <span id="best">0</span>
+</div>
+<div class="ui controls bottom left">
+<b>~ Controls ~</b><br>
+Left mouse button: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Place block.<br>
+Mouse wheel / arrow keys: Rotate block.
 </div>
 <script type="module">
 import { play } from './game.js';
