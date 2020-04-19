@@ -4,7 +4,7 @@ function Physics() {
     this.pairCache = new A.btDbvtBroadphase();
     this.constraintSolver = new A.btSequentialImpulseConstraintSolver();
     this.world = new A.btDiscreteDynamicsWorld(this.dispatcher, this.pairCache, this.constraintSolver, this.collisionConfiguration);
-    this.world.setGravity(new A.btVector3(0, -10, 0));
+    this.world.setGravity(new A.btVector3(0, -1000, 0));
 }
 
 
@@ -39,7 +39,7 @@ function Graphics() {
 
     // Geometries.
     this.boxGeometry = new T.BoxGeometry();
-    this.sphereGeometry = new T.SphereGeometry(0.5);
+    this.sphereGeometry = new T.SphereGeometry(0.5, 16, 16);
 
     // Materials.
     this.material = new T.MeshStandardMaterial();
@@ -73,6 +73,10 @@ function GameObject(physics, graphics, shape, mass, x, y, z) {
         sy = shape[2];
         sz = shape[3];
     }
+    mass = mass ? mass : 0;
+    x = x ? x : 0;
+    y = y ? y : 0;
+    z = z ? z : 0;
 
     // Body.
     switch (shape[0]) {
@@ -103,7 +107,7 @@ function GameObject(physics, graphics, shape, mass, x, y, z) {
     }
     this.mesh = new T.Mesh(geometry, graphics.material);
     this.mesh.scale.set(sx, sy, sz);
-    this.mesh.position.set(x ? x : 0, y ? y : 0, z ? z : 0);
+    this.mesh.position.set(x, y, z);
 }
 
 
@@ -111,6 +115,16 @@ GameObject.prototype.destroy = function() {
     A.destroy(this.body);
     A.destroy(this.motionState);
     A.destroy(this.collisionShape);
+}
+
+
+GameObject.prototype.syncPhysics = function() {
+    var transform = new A.btTransform();
+    this.motionState.getWorldTransform(transform);
+    var position = transform.getOrigin();
+    var rotation = transform.getRotation();
+    this.mesh.position.set(position.x() * 0.01, position.y() * 0.01, position.z() * 0.01);
+    this.mesh.quaternion.set(rotation.x(), rotation.y(), rotation.z(), rotation.w());
 }
 
 
@@ -152,6 +166,9 @@ function play() {
 
 
     function syncPhysics() {
+        for (block of blocks) {
+            block.syncPhysics();
+        }
     }
 
 
