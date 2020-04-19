@@ -40,6 +40,10 @@ function Graphics() {
     this.topLight = new T.DirectionalLight(0x404040);
     this.topLight.position.y = 10;
     this.topLight.castShadow = true;
+    this.topLight.shadow.mapSize.x = 1024;
+    this.topLight.shadow.mapSize.y = 256;
+    this.topLight.shadow.camera.left = -15;
+    this.topLight.shadow.camera.right = 15;
     this.scene.add(this.topLight);
 
     // Geometries.
