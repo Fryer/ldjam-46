@@ -43,6 +43,8 @@ function buildLevel() {
     screenX = 0;
     placementCooldown = 0;
     randomSpawnCooldown = 8;
+
+    document.getElementById('start').style.display = '';
 }
 
 
@@ -78,7 +80,10 @@ function rotateBlock(direction) {
 
 function placeBlock() {
     // Start scrolling when the first block is placed.
-    started = true;
+    if (!started) {
+        document.getElementById('start').style.display = 'none';
+        started = true;
+    }
 
     if (placementCooldown > 0) {
         return;
