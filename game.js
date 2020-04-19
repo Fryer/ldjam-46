@@ -19,6 +19,7 @@ var blocks;
 
 var screenX;
 var placementCooldown;
+var randomSpawnCooldown;
 
 
 function buildLevel() {
@@ -39,6 +40,7 @@ function buildLevel() {
 
     screenX = 0;
     placementCooldown = 0;
+    randomSpawnCooldown = 8;
 }
 
 
@@ -82,6 +84,15 @@ function placeBlock() {
 }
 
 
+function spawnRandomBlock() {
+    var y = Math.random() * 10 - 5;
+    var block = new GameObject(physics, graphics, ['box', 1, 4, 1], 0, screenX + 16, y);
+    block.bodyActive = true;
+    block.meshActive = true;
+    blocks.push(block);
+}
+
+
 function start() {
     physics = new Physics();
     graphics = new Graphics();
@@ -111,6 +122,13 @@ function update(dt) {
     if (blocks.length > 0 && blocks[0].mesh.position.x < screenX - 16) {
         blocks[0].destroy();
         blocks = blocks.slice(1);
+    }
+
+    // Spawn random blocks.
+    randomSpawnCooldown -= dt;
+    if (randomSpawnCooldown <= 0) {
+        randomSpawnCooldown = 4;
+        spawnRandomBlock();
     }
 
     // Scroll.
