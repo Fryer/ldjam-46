@@ -156,7 +156,7 @@ function update(dt) {
 
     // Scroll.
     if (started) {
-        screenX += 2 * dt;
+        screenX += 3 * dt;
     }
     graphics.camera.position.x = screenX;
 
@@ -176,7 +176,7 @@ function update(dt) {
 
     // Move player.
     if (started) {
-        player.body.setAngularVelocity(new A.btVector3(0, 0, -4 - player.speedOffset));
+        player.body.setAngularVelocity(new A.btVector3(0, 0, -6 - player.speedOffset));
         player.body.activate();
     }
 
@@ -207,7 +207,7 @@ function update(dt) {
             else if (block.direction < 0 && block.mesh.position.y < -6) {
                 block.direction *= -1;
             }
-            var speed = 100 * block.direction;
+            var speed = 150 * block.direction;
             var transform = new A.btTransform();
             block.motionState.getWorldTransform(transform);
             transform.setOrigin(transform.getOrigin().op_add(new A.btVector3(0, speed * dt, 0)));
