@@ -38,6 +38,7 @@ export function Graphics() {
 
     // Materials.
     this.material = new T.MeshStandardMaterial();
+    this.transparent = new T.MeshStandardMaterial({ transparent: true, opacity: 0.5 });
 }
 
 

@@ -37,6 +37,7 @@ function start() {
     startingPlatform.bodyActive = true;
     startingPlatform.meshActive = true;
     selectedBlock = new GameObject(physics, graphics, ['box', 5, 0.5, 1]);
+    selectedBlock.mesh.material = graphics.transparent;
     selectedBlock.meshActive = true;
 }
 
