@@ -70,6 +70,12 @@ function updateBest() {
 }
 
 
+function rotateBlock(direction) {
+    inputAngle += direction;
+    inputAngle = inputAngle - Math.floor(inputAngle / 16) * 16;
+}
+
+
 function placeBlock() {
     // Start scrolling when the first block is placed.
     started = true;
@@ -243,9 +249,21 @@ function render() {
 
 
 function inputButton(button, pressed) {
-    if (button == 'Mouse0' && pressed) {
-        placeBlock();
-        return true;
+    if (!pressed) {
+        return false;
+    }
+    switch (button) {
+        case 'Mouse0':
+            placeBlock();
+            return true;
+        case 'ArrowLeft':
+        case 'ArrowUp':
+            rotateBlock(1);
+            return true;
+        case 'ArrowRight':
+        case 'ArrowDown':
+            rotateBlock(-1);
+            return true;
     }
     return false;
 }
@@ -259,8 +277,7 @@ function inputPoint(x, y) {
 
 function inputWheel(mode, dx, dy, dz) {
     if (mode == 1 && dy != 0) {
-        inputAngle += dy > 0 ? -1 : 1;
-        inputAngle = inputAngle - Math.floor(inputAngle / 16) * 16;
+        rotateBlock(dy > 0 ? -1 : 1);
         return true;
     }
     return false;
