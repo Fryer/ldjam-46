@@ -14,13 +14,13 @@ function start() {
     graphics = new Graphics();
 
     blocks.push(new GameObject(physics, graphics, ['box']));
-    blocks.push(new GameObject(physics, graphics, ['box'], 0, -4, 4, 0));
-    blocks.push(new GameObject(physics, graphics, ['box', 2], 0, 4, 4, 0));
-    blocks.push(new GameObject(physics, graphics, ['box', 2, 1.5], 0, -4, -4, 0));
-    blocks.push(new GameObject(physics, graphics, ['box', 0.5, 1, 1.5], 0, 4, -4, 0));
+    blocks.push(new GameObject(physics, graphics, ['box'], 0, -4, 4));
+    blocks.push(new GameObject(physics, graphics, ['box', 2], 0, 4, 4));
+    blocks.push(new GameObject(physics, graphics, ['box', 2, 1.5], 0, -4, -4, 0, Math.PI * 0.4));
+    blocks.push(new GameObject(physics, graphics, ['box', 0.5, 1, 1.5], 0, 4, -4, 0, -Math.PI * 0.2));
     blocks.push(new GameObject(physics, graphics, ['sphere'], 0, -6));
     blocks.push(new GameObject(physics, graphics, ['sphere', 0.5], 0, 6));
-    blocks.push(new GameObject(physics, graphics, ['box', 16, 1, 16], 0, 0, -6, 0));
+    blocks.push(new GameObject(physics, graphics, ['box', 16, 1, 16], 0, 0, -6));
     blocks.push(new GameObject(physics, graphics, ['box'], 1, 0.6, 2));
     blocks.push(new GameObject(physics, graphics, ['sphere'], 1, 0, 4));
     for (let block of blocks) {
