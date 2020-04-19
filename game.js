@@ -8,8 +8,18 @@ var graphics;
 
 var player;
 var startingPlatform;
-var selectedPlatform;
+var selectedBlock;
 var blocks = new Array();
+
+
+function placeBlock() {
+    var s = selectedBlock.mesh.scale;
+    var p = selectedBlock.mesh.position;
+    var block = new GameObject(physics, graphics, ['box', s.x, s.y, s.z], 0, p.x, p.y, p.z);
+    block.bodyActive = true;
+    block.meshActive = true;
+    blocks.push(block);
+}
 
 
 function start() {
@@ -22,8 +32,8 @@ function start() {
     startingPlatform = new GameObject(physics, graphics, ['box', 10, 0.5, 2], 0, 0, -2);
     startingPlatform.bodyActive = true;
     startingPlatform.meshActive = true;
-    selectedPlatform = new GameObject(physics, graphics, ['box', 5, 0.5, 1]);
-    selectedPlatform.meshActive = true;
+    selectedBlock = new GameObject(physics, graphics, ['box', 5, 0.5, 1]);
+    selectedBlock.meshActive = true;
 }
 
 
@@ -47,6 +57,9 @@ function render() {
 
 
 function inputButton(button, pressed) {
+    if (button == 'Mouse0' && pressed) {
+        placeBlock();
+    }
 }
 
 
@@ -57,7 +70,7 @@ function inputPoint(x, y) {
     var clipZ = (new T.Vector3(0, 0, 0)).applyMatrix4(graphics.camera.matrixWorld).applyMatrix4(graphics.camera.projectionMatrix).z;
     var worldPosition = (new T.Vector3(clipX, clipY, clipZ)).applyMatrix4(graphics.camera.projectionMatrixInverse).applyMatrix4(graphics.camera.matrixWorldInverse);
 
-    selectedPlatform.mesh.position.copy(worldPosition);
+    selectedBlock.mesh.position.copy(worldPosition);
 }
 
 
