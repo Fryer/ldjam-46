@@ -5,14 +5,14 @@ export function Graphics() {
     // Renderer.
     this.renderer = new T.WebGLRenderer();
     this.renderer.shadowMap.enabled = true;
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.setSize(Math.min(window.innerWidth, window.innerHeight * 2), window.innerHeight);
     this.canvas = document.body.appendChild(this.renderer.domElement);
 
     // Scene.
     this.scene = new T.Scene();
 
     // Camera.
-    this.camera = new T.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+    this.camera = new T.PerspectiveCamera(60, Math.min(window.innerWidth / window.innerHeight, 2), 0.1, 1000);
     this.camera.position.z = 10;
     this.scene.add(this.camera);
 
@@ -58,10 +58,21 @@ export function Graphics() {
 
     // Materials.
     this.material = new T.MeshStandardMaterial();
+
+    // Window resize event listener.
+    var renderer = this.renderer;
+    var camera = this.camera;
+    this.resizeListener = function() {
+        renderer.setSize(Math.min(window.innerWidth, window.innerHeight * 2), window.innerHeight);
+        camera.aspect = Math.min(window.innerWidth / window.innerHeight, 2);
+        camera.updateProjectionMatrix();
+    }
+    window.addEventListener('resize', this.resizeListener);
 }
 
 
 Graphics.prototype.destroy = function() {
+    window.removeEventListener('resize', this.resizeListener);
     this.scene.dispose();
     this.renderer.dispose();
     this.canvas.remove();
