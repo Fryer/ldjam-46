@@ -27,10 +27,12 @@ function buildLevel() {
     inputAngle = 0;
 
     player = new GameObject(physics, graphics, ['sphere'], 1);
+    player.mesh.material = graphics.playerMaterial;
     player.bodyActive = true;
     player.meshActive = true;
     player.speedOffset = 0;
     startingPlatform = new GameObject(physics, graphics, ['box', 10, 0.5, 2], 0, 0, -2);
+    startingPlatform.mesh.material = graphics.startMaterial;
     startingPlatform.bodyActive = true;
     startingPlatform.meshActive = true;
     selectedBlock = new GameObject(physics, graphics, ['box', 5, 0.5, 0.75]);
@@ -109,6 +111,7 @@ function spawnRandomBlock() {
     if (Math.random() < Math.min(0.5, (screenX - 20) * 0.0025)) {
         // Moving block.
         block = new GameObject(physics, graphics, ['box', 2, 4, 1], 'kinematic', x, y);
+        block.mesh.material = graphics.movingMaterial;
         block.canMove = true;
         block.type = 'moveVertical';
         block.direction = 1 + Math.random() * Math.min(1, (screenX - 40) * 0.00125);
@@ -116,6 +119,7 @@ function spawnRandomBlock() {
     else {
         // Normal block.
         block = new GameObject(physics, graphics, ['box', 1, 4, 1], 0, x, y);
+        block.mesh.material = graphics.obstacleMaterial;
         block.canMove = false;
         block.type = 'normal';
     }
@@ -131,6 +135,10 @@ function start() {
 
     graphics.transparentMaterial = new T.MeshStandardMaterial({ transparent: true, opacity: 0.5 });
     graphics.disabledMaterial = new T.MeshStandardMaterial({ color: 0xff0000, transparent: true, opacity: 0.5 });
+    graphics.startMaterial = new T.MeshStandardMaterial({ color: 0x40bf40 });
+    graphics.playerMaterial = new T.MeshStandardMaterial({ color: 0xffbf40 });
+    graphics.obstacleMaterial = new T.MeshStandardMaterial({ color: 0x9f9f9f });
+    graphics.movingMaterial = new T.MeshStandardMaterial({ color: 0x2060ff });
 
     buildLevel();
     updateBest();
