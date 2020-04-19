@@ -16,6 +16,23 @@ export function Graphics() {
     this.camera.position.z = 10;
     this.scene.add(this.camera);
 
+    // Background.
+    this.backgroundGeometry = new T.Geometry();
+    this.backgroundGeometry.vertices.push(
+        new T.Vector3(-32, 16, -20),
+        new T.Vector3(-32, -16, -20),
+        new T.Vector3(32, 16, -20),
+        new T.Vector3(32, -16, -20)
+    );
+    this.backgroundGeometry.faces.push(
+        new T.Face3(0, 1, 2, null, [new T.Color(0xbfbfbf), new T.Color(0x809fbf), new T.Color(0xbfbfbf)]),
+        new T.Face3(3, 2, 1, null, [new T.Color(0x809fbf), new T.Color(0xbfbfbf), new T.Color(0x809fbf)])
+    );
+    this.backgroundGeometry.computeBoundingSphere();
+    this.backgroundMaterial = new T.MeshBasicMaterial({ vertexColors: true });
+    this.background = new T.Mesh(this.backgroundGeometry, this.backgroundMaterial);
+    this.camera.add(this.background);
+
     // Lighting.
     this.sun = new T.DirectionalLight(0xffdf9f);
     this.sun.position.set(-1, 2, 4);
