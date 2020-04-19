@@ -1,3 +1,6 @@
+/* LICENSE: https://fryer.github.com/ldjam-46/license.txt */
+
+
 export function GameObject(physics, graphics, shape, mass, x, y, z, angle) {
     this.physics = physics;
     this.graphics = graphics;

@@ -1,3 +1,6 @@
+/* LICENSE: https://fryer.github.com/ldjam-46/license.txt */
+
+
 import { Physics } from '/physics.js';
 import { Graphics } from '/graphics.js';
 import { GameObject } from '/game-object.js';

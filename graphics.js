@@ -1,3 +1,6 @@
+/* LICENSE: https://fryer.github.com/ldjam-46/license.txt */
+
+
 export function Graphics() {
     // Renderer.
     this.renderer = new T.WebGLRenderer();

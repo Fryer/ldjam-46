@@ -1,3 +1,6 @@
+/* LICENSE: https://fryer.github.com/ldjam-46/license.txt */
+
+
 export function Physics() {
     this.collisionConfiguration = new A.btDefaultCollisionConfiguration();
     this.dispatcher = new A.btCollisionDispatcher(this.collisionConfiguration);
