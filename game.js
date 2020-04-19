@@ -7,12 +7,58 @@ var physics;
 var graphics;
 
 var inputX = 0, inputY = 0;
-var inputAngle = 0;
+var inputAngle;
 
 var player;
 var startingPlatform;
 var selectedBlock;
-var blocks = new Array();
+var blocks;
+
+var screenX;
+
+
+function buildLevel() {
+    inputAngle = 0;
+
+    player = new GameObject(physics, graphics, ['sphere'], 1);
+    player.bodyActive = true;
+    player.meshActive = true;
+    player.speedOffset = 0;
+    startingPlatform = new GameObject(physics, graphics, ['box', 10, 0.5, 2], 0, 0, -2);
+    startingPlatform.bodyActive = true;
+    startingPlatform.meshActive = true;
+    selectedBlock = new GameObject(physics, graphics, ['box', 5, 0.5, 1]);
+    selectedBlock.mesh.material = graphics.transparent;
+    selectedBlock.meshActive = true;
+
+    blocks = new Array();
+
+    screenX = 0;
+}
+
+
+function clearLevel() {
+    player.destroy();
+    player = null;
+    startingPlatform.destroy();
+    startingPlatform = null;
+    selectedBlock.destroy();
+    selectedBlock = null;
+
+    for (let block of blocks) {
+        block.destroy();
+    }
+    blocks = null;
+}
+
+
+function updateBest() {
+    var best = localStorage.getItem('best');
+    best = Math.max(best ? best : 0, (player.mesh.position.x * 10).toFixed());
+    localStorage.setItem('best', best);
+    var bestUI = document.getElementById('best');
+    bestUI.innerText = best.toFixed();
+}
 
 
 function placeBlock() {
@@ -28,35 +74,40 @@ function placeBlock() {
 function start() {
     physics = new Physics();
     graphics = new Graphics();
+    buildLevel();
+    updateBest();
+}
 
-    player = new GameObject(physics, graphics, ['sphere'], 1);
-    player.bodyActive = true;
-    player.meshActive = true;
-    player.speedOffset = 0;
-    startingPlatform = new GameObject(physics, graphics, ['box', 10, 0.5, 2], 0, 0, -2);
-    startingPlatform.bodyActive = true;
-    startingPlatform.meshActive = true;
-    selectedBlock = new GameObject(physics, graphics, ['box', 5, 0.5, 1]);
-    selectedBlock.mesh.material = graphics.transparent;
-    selectedBlock.meshActive = true;
+
+function restart() {
+    updateBest();
+    clearLevel();
+    buildLevel();
 }
 
 
 function update(dt) {
+    // Check for death.
+    if (player.mesh.position.x < screenX - 12 || player.mesh.position.y < -8) {
+        restart();
+        return;
+    }
+
     // Scroll.
-    graphics.camera.position.x += 2 * dt;
+    screenX += 2 * dt;
+    graphics.camera.position.x = screenX;
 
     // Adjust player speed.
-    if (player.mesh.position.x < graphics.camera.position.x - 6) {
+    if (player.mesh.position.x < screenX - 6) {
         player.speedOffset = 2;
     }
-    else if (player.mesh.position.x > graphics.camera.position.x - 4) {
+    else if (player.mesh.position.x > screenX - 4) {
         player.speedOffset = -2;
     }
-    else if (player.mesh.position.x > graphics.camera.position.x - 5 && player.speedOffset > 0) {
+    else if (player.mesh.position.x > screenX - 5 && player.speedOffset > 0) {
         player.speedOffset = 0;
     }
-    else if (player.mesh.position.x < graphics.camera.position.x - 5 && player.speedOffset < 0) {
+    else if (player.mesh.position.x < screenX - 5 && player.speedOffset < 0) {
         player.speedOffset = 0;
     }
 

@@ -14,20 +14,29 @@ body {
 canvas {
     display: block;
 }
-#ui {
+.ui {
     position: fixed;
-    left: 100px;
     top: 20px;
     color: #fff;
     font-family: monospace;
     font-weight: bold;
     font-size: 60px;
 }
+.left {
+    left: 100px;
+}
+.right {
+    right: 100px;
+    text-align: right;
+}
 </style>
 </head>
 <body>
-<div id="ui">
+<div class="ui left">
 Distance: <span id="distance">0</span>
+</div>
+<div class="ui right">
+Best: <span id="best">0</span>
 </div>
 <script type="module">
 import { play } from '/game.js';

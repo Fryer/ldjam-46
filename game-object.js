@@ -101,6 +101,8 @@ export function GameObject(physics, graphics, shape, mass, x, y, z, angle) {
 
 
 GameObject.prototype.destroy = function() {
+    this.bodyActive = false;
+    this.meshActive = false;
     A.destroy(this.body);
     A.destroy(this.motionState);
     A.destroy(this.collisionShape);
