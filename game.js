@@ -3,63 +3,63 @@ import { Graphics } from '/graphics.js';
 import { GameObject } from '/game-object.js';
 
 
+var physics;
+var graphics;
+
+var blocks = new Array();
+
+
+function start() {
+    physics = new Physics();
+    graphics = new Graphics();
+
+    blocks.push(new GameObject(physics, graphics, ['box']));
+    blocks.push(new GameObject(physics, graphics, ['box'], 0, -4, 4, 0));
+    blocks.push(new GameObject(physics, graphics, ['box', 2], 0, 4, 4, 0));
+    blocks.push(new GameObject(physics, graphics, ['box', 2, 1.5], 0, -4, -4, 0));
+    blocks.push(new GameObject(physics, graphics, ['box', 0.5, 1, 1.5], 0, 4, -4, 0));
+    blocks.push(new GameObject(physics, graphics, ['sphere'], 0, -6));
+    blocks.push(new GameObject(physics, graphics, ['sphere', 0.5], 0, 6));
+    blocks.push(new GameObject(physics, graphics, ['box', 16, 1, 16], 0, 0, -6, 0));
+    blocks.push(new GameObject(physics, graphics, ['box'], 1, 0.6, 2));
+    blocks.push(new GameObject(physics, graphics, ['sphere'], 1, 0, 4));
+    for (let block of blocks) {
+        block.bodyActive = true;
+        block.meshActive = true;
+    }
+}
+
+
+function update(dt) {
+}
+
+
+function updatePhysics(dt) {
+    physics.world.stepSimulation(dt, 5, 1 / 120);
+}
+
+
+function syncPhysics() {
+    for (let block of blocks) {
+        block.syncPhysics();
+    }
+}
+
+
+function render() {
+    graphics.renderer.render(graphics.scene, graphics.camera);
+}
+
+
+function inputButton(button, pressed) {
+}
+
+
+function inputPoint(x, y) {
+}
+
+
 export function play() {
-    var physics;
-    var graphics;
-
-    var blocks = new Array();
-
-
-    function start() {
-        physics = new Physics();
-        graphics = new Graphics();
-
-        blocks.push(new GameObject(physics, graphics, ['box']));
-        blocks.push(new GameObject(physics, graphics, ['box'], 0, -4, 4, 0));
-        blocks.push(new GameObject(physics, graphics, ['box', 2], 0, 4, 4, 0));
-        blocks.push(new GameObject(physics, graphics, ['box', 2, 1.5], 0, -4, -4, 0));
-        blocks.push(new GameObject(physics, graphics, ['box', 0.5, 1, 1.5], 0, 4, -4, 0));
-        blocks.push(new GameObject(physics, graphics, ['sphere'], 0, -6));
-        blocks.push(new GameObject(physics, graphics, ['sphere', 0.5], 0, 6));
-        blocks.push(new GameObject(physics, graphics, ['box', 16, 1, 16], 0, 0, -6, 0));
-        blocks.push(new GameObject(physics, graphics, ['box'], 1, 0.6, 2));
-        blocks.push(new GameObject(physics, graphics, ['sphere'], 1, 0, 4));
-        for (let block of blocks) {
-            block.bodyActive = true;
-            block.meshActive = true;
-        }
-    }
-
-
-    function update(dt) {
-    }
-
-
-    function updatePhysics(dt) {
-        physics.world.stepSimulation(dt, 5, 1 / 120);
-    }
-
-
-    function syncPhysics() {
-        for (let block of blocks) {
-            block.syncPhysics();
-        }
-    }
-
-
-    function render() {
-        graphics.renderer.render(graphics.scene, graphics.camera);
-    }
-
-
-    function inputButton(button, pressed) {
-    }
-
-
-    function inputPoint(x, y) {
-    }
-
-
     // Start the game loop.
     var clock = new T.Clock();
     start();
