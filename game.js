@@ -104,10 +104,38 @@ function placeBlock() {
 }
 
 
+function spawnRandomSaw() {
+    var x = Math.random() * 5 + screenX + 16;
+    var y = Math.random() * 10 - 5;
+    var block = new GameObject(physics, graphics, ['box', 3, 3, 0.25], 'kinematic', x, y);
+    block.mesh.material = graphics.sawMaterial;
+    block.canMove = true;
+    block.type = 'saw';
+    block.origin = screenX + 18.5;
+    block.direction = 1;
+    block.angle = Math.random() * Math.PI;
+    block.bodyActive = true;
+    block.meshActive = true;
+    blocks.push(block);
+
+    // Track.
+    x = screenX + 18.5;
+    block = new GameObject(physics, graphics, ['box', 10, 0.25, 0.25], 0, x, y, -0.25);
+    block.mesh.material = graphics.transparentMaterial;
+    block.canMove = false;
+    block.type = 'track';
+    block.meshActive = true;
+    blocks.push(block);
+}
+
+
 function spawnRandomBlock() {
     var x = Math.random() * 2 + screenX + 16;
     var y = Math.random() * 12 - 6;
     var block;
+    if (Math.random() < Math.min(0.25, (screenX - 100) * 0.001)) {
+        spawnRandomSaw();
+    }
     if (Math.random() < Math.min(0.5, (screenX - 20) * 0.0025)) {
         // Moving block.
         block = new GameObject(physics, graphics, ['box', 2, 4, 1], 'kinematic', x, y);
@@ -139,6 +167,7 @@ function start() {
     graphics.playerMaterial = new T.MeshStandardMaterial({ color: 0xffbf40 });
     graphics.obstacleMaterial = new T.MeshStandardMaterial({ color: 0x9f9f9f });
     graphics.movingMaterial = new T.MeshStandardMaterial({ color: 0x2060ff });
+    graphics.sawMaterial = new T.MeshStandardMaterial({ color: 0x9f2000 });
 
     buildLevel();
     updateBest();
@@ -159,7 +188,7 @@ function update(dt) {
     }
 
     // Remove off-screen blocks.
-    if (blocks.length > 0 && blocks[0].mesh.position.x < screenX - 16) {
+    if (blocks.length > 0 && blocks[0].mesh.position.x < screenX - 32) {
         blocks[0].destroy();
         blocks = blocks.slice(1);
     }
@@ -230,6 +259,23 @@ function update(dt) {
             var transform = new A.btTransform();
             block.motionState.getWorldTransform(transform);
             transform.setOrigin(transform.getOrigin().op_add(new A.btVector3(0, speed * dt, 0)));
+            block.motionState.setWorldTransform(transform);
+        }
+        else if (block.type == 'saw') {
+            if (block.direction > 0 && block.mesh.position.x > block.origin + 5) {
+                block.direction *= -1;
+            }
+            else if (block.direction < 0 && block.mesh.position.x < block.origin - 5) {
+                block.direction *= -1;
+            }
+            var speed = 200 * block.direction;
+            var transform = new A.btTransform();
+            block.motionState.getWorldTransform(transform);
+            transform.setOrigin(transform.getOrigin().op_add(new A.btVector3(speed * dt, 0, 0)));
+            var rotation = new T.Quaternion();
+            block.angle += Math.PI * 2 * dt;
+            rotation.setFromEuler(new T.Euler(0, 0, block.angle, 'XYZ'));
+            transform.setRotation(new A.btQuaternion(rotation.x, rotation.y, rotation.z, rotation.w));
             block.motionState.setWorldTransform(transform);
         }
     }
