@@ -33,7 +33,7 @@ function buildLevel() {
     startingPlatform = new GameObject(physics, graphics, ['box', 10, 0.5, 2], 0, 0, -2);
     startingPlatform.bodyActive = true;
     startingPlatform.meshActive = true;
-    selectedBlock = new GameObject(physics, graphics, ['box', 5, 0.5, 1]);
+    selectedBlock = new GameObject(physics, graphics, ['box', 5, 0.5, 0.75]);
     selectedBlock.mesh.material = graphics.transparentMaterial;
     selectedBlock.meshActive = true;
 
