@@ -11,6 +11,7 @@ export function Graphics() {
     // Camera.
     this.camera = new T.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
     this.camera.position.z = 10;
+    this.scene.add(this.camera);
 
     // Lighting.
     this.sun = new T.DirectionalLight(0xffdf9f);
@@ -20,12 +21,16 @@ export function Graphics() {
     this.scene.add(this.ambient);
     this.topLight = new T.DirectionalLight(0x404040);
     this.topLight.position.y = 10;
+    var target = new T.Object3D();
+    target.position.z = -10;
+    this.camera.add(target);
+    this.topLight.target = target;
     this.topLight.castShadow = true;
     this.topLight.shadow.mapSize.x = 1024;
     this.topLight.shadow.mapSize.y = 256;
     this.topLight.shadow.camera.left = -15;
     this.topLight.shadow.camera.right = 15;
-    this.scene.add(this.topLight);
+    target.add(this.topLight);
 
     // Geometries.
     this.boxGeometry = new T.BoxGeometry();
