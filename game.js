@@ -15,6 +15,7 @@ var selectedBlock;
 var blocks;
 
 var screenX;
+var placementCooldown;
 
 
 function buildLevel() {
@@ -28,12 +29,13 @@ function buildLevel() {
     startingPlatform.bodyActive = true;
     startingPlatform.meshActive = true;
     selectedBlock = new GameObject(physics, graphics, ['box', 5, 0.5, 1]);
-    selectedBlock.mesh.material = graphics.transparent;
+    selectedBlock.mesh.material = graphics.transparentMaterial;
     selectedBlock.meshActive = true;
 
     blocks = new Array();
 
     screenX = 0;
+    placementCooldown = 0;
 }
 
 
@@ -62,6 +64,12 @@ function updateBest() {
 
 
 function placeBlock() {
+    if (placementCooldown > 0) {
+        return;
+    }
+    placementCooldown = 1;
+    selectedBlock.mesh.material = graphics.disabledMaterial;
+
     var s = selectedBlock.mesh.scale;
     var p = selectedBlock.mesh.position;
     var block = new GameObject(physics, graphics, ['box', s.x, s.y, s.z], 0, p.x, p.y, p.z, inputAngle * Math.PI * 0.125);
@@ -74,6 +82,10 @@ function placeBlock() {
 function start() {
     physics = new Physics();
     graphics = new Graphics();
+
+    graphics.transparentMaterial = new T.MeshStandardMaterial({ transparent: true, opacity: 0.5 });
+    graphics.disabledMaterial = new T.MeshStandardMaterial({ color: 0xff0000, transparent: true, opacity: 0.5 });
+
     buildLevel();
     updateBest();
 }
@@ -124,6 +136,12 @@ function update(dt) {
     worldPosition.y += graphics.camera.position.y;
 
     // Update selected block.
+    if (placementCooldown > 0) {
+        placementCooldown -= dt;
+        if (placementCooldown <= 0) {
+            selectedBlock.mesh.material = graphics.transparentMaterial;
+        }
+    }
     selectedBlock.mesh.position.copy(worldPosition);
     selectedBlock.mesh.quaternion.setFromEuler(new T.Euler(0, 0, inputAngle * Math.PI * 0.125, 'XYZ'));
 }
