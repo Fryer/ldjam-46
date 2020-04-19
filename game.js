@@ -7,6 +7,7 @@ var physics;
 var graphics;
 
 var inputX = 0, inputY = 0;
+var inputAngle = 0;
 
 var player;
 var startingPlatform;
@@ -17,7 +18,7 @@ var blocks = new Array();
 function placeBlock() {
     var s = selectedBlock.mesh.scale;
     var p = selectedBlock.mesh.position;
-    var block = new GameObject(physics, graphics, ['box', s.x, s.y, s.z], 0, p.x, p.y, p.z);
+    var block = new GameObject(physics, graphics, ['box', s.x, s.y, s.z], 0, p.x, p.y, p.z, inputAngle * Math.PI * 0.125);
     block.bodyActive = true;
     block.meshActive = true;
     blocks.push(block);
@@ -71,8 +72,9 @@ function update(dt) {
     worldPosition.x += graphics.camera.position.x;
     worldPosition.y += graphics.camera.position.y;
 
-    // Update selected block position.
+    // Update selected block.
     selectedBlock.mesh.position.copy(worldPosition);
+    selectedBlock.mesh.quaternion.setFromEuler(new T.Euler(0, 0, inputAngle * Math.PI * 0.125, 'XYZ'));
 }
 
 
@@ -94,13 +96,25 @@ function render() {
 function inputButton(button, pressed) {
     if (button == 'Mouse0' && pressed) {
         placeBlock();
+        return true;
     }
+    return false;
 }
 
 
 function inputPoint(x, y) {
     inputX = x;
     inputY = y;
+}
+
+
+function inputWheel(mode, dx, dy, dz) {
+    if (mode == 1 && dy != 0) {
+        inputAngle += dy > 0 ? -1 : 1;
+        inputAngle = inputAngle - Math.floor(inputAngle / 16) * 16;
+        return true;
+    }
+    return false;
 }
 
 
@@ -132,9 +146,15 @@ export function play() {
     function mouseMove(event) {
         inputPoint(event.pageX, event.pageY);
     }
+    function mouseWheel(event) {
+        if (inputWheel(event.deltaMode, event.deltaX, event.deltaY, event.deltaZ)) {
+            event.preventDefault();
+        }
+    }
     window.addEventListener('keydown', function(event) { key(event, true); });
     window.addEventListener('keyup', function(event) { key(event, false); });
     window.addEventListener('mousedown', function(event) { mouseButton(event, true); });
     window.addEventListener('mouseup', function(event) { mouseButton(event, false); });
     window.addEventListener('mousemove', mouseMove);
+    window.addEventListener('wheel', mouseWheel);
 }

@@ -23,6 +23,8 @@ export function GameObject(physics, graphics, shape, mass, x, y, z, angle) {
     y = y ? y : 0;
     z = z ? z : 0;
     angle = angle ? angle : 0;
+    var rotation = new T.Quaternion();
+    rotation.setFromEuler(new T.Euler(0, 0, angle, 'XYZ'));
 
     // Body.
     switch (shape[0]) {
@@ -37,8 +39,6 @@ export function GameObject(physics, graphics, shape, mass, x, y, z, angle) {
     var transform = new A.btTransform();
     transform.setIdentity();
     transform.setOrigin(new A.btVector3(x * 100, y * 100, z * 100));
-    var rotation = new T.Quaternion();
-    rotation.setFromEuler(new T.Euler(0, 0, angle, 'XYZ'));
     transform.setRotation(new A.btQuaternion(rotation.x, rotation.y, rotation.z, rotation.w));
     this.motionState = new A.btDefaultMotionState(transform);
     var constructionInfo = new A.btRigidBodyConstructionInfo(mass, this.motionState, this.collisionShape, localInertia);
@@ -59,6 +59,7 @@ export function GameObject(physics, graphics, shape, mass, x, y, z, angle) {
     this.mesh = new T.Mesh(geometry, graphics.material);
     this.mesh.scale.set(sx, sy, sz);
     this.mesh.position.set(x, y, z);
+    this.mesh.quaternion.copy(rotation);
     this.mesh.castShadow = true;
     this.mesh.receiveShadow = true;
 
