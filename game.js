@@ -20,6 +20,7 @@ Physics.prototype.destroy = function() {
 function Graphics() {
     // Renderer.
     this.renderer = new T.WebGLRenderer();
+    this.renderer.shadowMap.enabled = true;
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.canvas = document.body.appendChild(this.renderer.domElement);
 
@@ -31,11 +32,15 @@ function Graphics() {
     this.camera.position.z = 10;
 
     // Lighting.
-    this.sun = new T.DirectionalLight(0xffdfbf);
+    this.sun = new T.DirectionalLight(0xffdf9f);
     this.sun.position.set(-1, 2, 4);
     this.scene.add(this.sun);
-    this.ambient = new T.AmbientLight(0x203040);
+    this.ambient = new T.AmbientLight(0x203050);
     this.scene.add(this.ambient);
+    this.topLight = new T.DirectionalLight(0x404040);
+    this.topLight.position.y = 10;
+    this.topLight.castShadow = true;
+    this.scene.add(this.topLight);
 
     // Geometries.
     this.boxGeometry = new T.BoxGeometry();
@@ -110,6 +115,8 @@ function GameObject(physics, graphics, shape, mass, x, y, z) {
     this.mesh = new T.Mesh(geometry, graphics.material);
     this.mesh.scale.set(sx, sy, sz);
     this.mesh.position.set(x, y, z);
+    this.mesh.castShadow = true;
+    this.mesh.receiveShadow = true;
 }
 
 
