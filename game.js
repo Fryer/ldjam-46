@@ -46,22 +46,21 @@ function update(dt) {
     graphics.camera.position.x += 2 * dt;
 
     // Adjust player speed.
-    if (player.mesh.position.x < graphics.camera.position.x - 1) {
-        player.speedOffset = 100;
+    if (player.mesh.position.x < graphics.camera.position.x - 6) {
+        player.speedOffset = 2;
     }
-    else if (player.mesh.position.x > graphics.camera.position.x + 1) {
-        player.speedOffset = -100;
+    else if (player.mesh.position.x > graphics.camera.position.x - 4) {
+        player.speedOffset = -2;
     }
-    else if (player.mesh.position.x > graphics.camera.position.x && player.speedOffset > 0) {
+    else if (player.mesh.position.x > graphics.camera.position.x - 5 && player.speedOffset > 0) {
         player.speedOffset = 0;
     }
-    else if (player.mesh.position.x < graphics.camera.position.x && player.speedOffset < 0) {
+    else if (player.mesh.position.x < graphics.camera.position.x - 5 && player.speedOffset < 0) {
         player.speedOffset = 0;
     }
 
     // Move player.
-    var velocity = player.body.getLinearVelocity();
-    player.body.setLinearVelocity(new A.btVector3(200 + player.speedOffset, velocity.y(), velocity.z()));
+    player.body.setAngularVelocity(new A.btVector3(0, 0, -4 - player.speedOffset));
     player.body.activate();
 
     // Transform input coordinates to world space.

@@ -42,6 +42,7 @@ export function GameObject(physics, graphics, shape, mass, x, y, z, angle) {
     transform.setRotation(new A.btQuaternion(rotation.x, rotation.y, rotation.z, rotation.w));
     this.motionState = new A.btDefaultMotionState(transform);
     var constructionInfo = new A.btRigidBodyConstructionInfo(mass, this.motionState, this.collisionShape, localInertia);
+    constructionInfo.set_m_friction(1.5);
     this.body = new A.btRigidBody(constructionInfo);
     this.body.setLinearFactor(new A.btVector3(1, 1, 0));
     this.body.setAngularFactor(new A.btVector3(0, 0, 1));
